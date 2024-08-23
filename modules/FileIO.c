@@ -1,0 +1,16 @@
+#include <stdio.h>
+#include "../eBat.h"
+#include "../eBatRuntime.h"
+
+/**
+ * Проверка наличии файла или папки
+ * @module FileIO.Exits
+ * @param path Путь к файлу
+ * @return 1 - Если файл найден или 0 - если нет
+ */
+int bat_runtime_fileio_exist(char* path){
+    /// Insert your code
+    printf("[RUNTIME] [FileIO] [Exits] %s\n", path);
+
+    return 0;
+}
