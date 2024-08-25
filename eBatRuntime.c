@@ -4,6 +4,29 @@
 #include "eBat.h"
 #include "eBatRuntime.h"
 
+void bat_runtime_echo(BAT_T* bat,BAT_GROUP_T* group){
+     if (bat->Echo == 1){
+        for (int i = 0; i < group->Size; i++){
+            BAT_TOKEN_T *Line = (BAT_TOKEN_T *) group->Tokens[i];
+            if (Line->type == BAT_TOKEN_TYPE_VARIABLE) {
+                printf("%%s% ", Line->value);
+            } else if (Line->type == BAT_TOKEN_TYPE_STRING) {
+                printf("\"%s\" ", Line->value);
+            } else {
+                printf("%s ", Line->value);
+            }
+
+        }
+        printf("\n");
+    }
+    if (bat->Debug == 1){
+        for (int y = 0; y < group->Size; y++){
+            BAT_TOKEN_T* xtok = (BAT_TOKEN_T*) group->Tokens[y];
+            printf(" |--- [%d | %d] Tok: [%d] %s | Val: %s \n", y+1, group->Size,  xtok->type, bat_debug_type(xtok->type), xtok->value);
+        }
+    }
+}
+
 int bat_runtime_equal(int Line, BAT_TOKEN_T* Data1, BAT_TOKEN_T* Eq, BAT_TOKEN_T* Data2) {
     if (Data1->type != Data2->type || (Data1->type != BAT_TOKEN_TYPE_VARIABLE && Data1->type != BAT_TOKEN_TYPE_NUMBER)) {
         bat_fatalerror(Line, "You cannot compare different types of data. Only NUMBERS and VARIABLES are allowed to be compared.");
@@ -70,7 +93,21 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
     if (MainTok->type == BAT_TOKEN_TYPE_ECHO) {
         EBAT_INVALIDARGC(line, group->Size - offset, 2);
         BAT_TOKEN_T *TextTok = (BAT_TOKEN_T *) group->Tokens[offset + 1];
-        bat_runtime_system_echo(TextTok->value);
+        if (TextTok->type == BAT_TOKEN_TYPE_DEBUG){
+            bat->Debug = !(bat->Debug);
+        } else if (TextTok->type == BAT_TOKEN_TYPE_TRUE){
+            bat->Echo = 1;
+        } else if (TextTok->type == BAT_TOKEN_TYPE_FALSE){
+            bat->Echo = 0;
+        } else if (TextTok->type == BAT_TOKEN_TYPE_STRING){
+            bat_runtime_system_echo(TextTok->value);
+        } else if (TextTok->type == BAT_TOKEN_TYPE_VARIABLE){
+            eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
+            eBatCheckVariable(line, TextTok->value, Text);
+            bat_runtime_system_echo(Text);
+        } else if (TextTok->type == BAT_TOKEN_TYPE_NUMBER){
+            bat_runtime_system_echo(TextTok->value);
+        }
         return 0;
     }
 
@@ -118,21 +155,17 @@ int bat_runtime_exec(BAT_T* bat){
     printf("========================\n");
     int ret = 0;
     for (int x = 0; x < bat->Size; x++){
-        printf("[%d | %d] \n", x+1, bat->Size);
         BAT_GROUP_T* group = (BAT_GROUP_T*) bat->Group[x];
+
+        bat_runtime_echo(bat, group);
 
         ret = bat_runtime_eval(bat, group, x + 1, 0);
         if (ret < 0) {
             return (-1 * ret);
         }
 
-        for (int y = 0; y < group->Size; y++){
-            BAT_TOKEN_T* xtok = (BAT_TOKEN_T*) group->Tokens[y];
-            printf(" |--- [%d | %d] Tok: [%d] %s | Val: %s \n", y+1, group->Size,  xtok->type, bat_debug_type(xtok->type), xtok->value);
-        }
-
     }
-    printf("========================\n");
     bat->ErrorCode = ret;
+    printf("========================\n");
     return ret;
 }

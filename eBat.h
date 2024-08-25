@@ -19,6 +19,7 @@ typedef enum {
     BAT_TOKEN_TYPE_TRUE,            ///< Флаг Правды
     BAT_TOKEN_TYPE_FALSE,           ///< Флаг лжы
     BAT_TOKEN_TYPE_EXIT,            ///< Выход
+    BAT_TOKEN_TYPE_DEBUG,           ///< Галочка для дебага
 
     BAT_TOKEN_TYPE_NOT,             ///< Условия для IF | Условие не равно
     BAT_TOKEN_TYPE_EXIST,           ///< Условия для IF | Существует файл или папка
@@ -35,6 +36,7 @@ typedef enum {
     BAT_TOKEN_TYPE_NUMBER,          ///< Тип данных число
     BAT_TOKEN_TYPE_OPERATOR,        ///< Тип данных оператор
     BAT_TOKEN_TYPE_VARIABLE,        ///< Тип данных переменная
+    BAT_TOKEN_TYPE_COMMENT,         ///< Комментарий (рекомендуется игнорировать!!!)
     BAT_TOKEN_TYPE_UNKNOWN          ///< Тип данных неизвестно
 } BAT_TOKEN_TYPE;
 
@@ -53,6 +55,7 @@ typedef struct BAT_GROUP {
 typedef struct BAT {
     int Echo;
     int ErrorCode;
+    int Debug;
     int Size;
     int Capacity;
     size_t* Group;

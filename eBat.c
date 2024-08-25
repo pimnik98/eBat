@@ -173,13 +173,17 @@ BAT_TOKEN_TYPE bat_parse_token(char* str) {
     bat_trim(str);
     str = bat_toLower(str);
     //bat_str_debug(str);
-    printf("str: '%s'\n",str);
+    //printf("str: '%s'\n",str);
 
     if (strcmp(str, "echo") == 0) return BAT_TOKEN_TYPE_ECHO;
     if (strcmp(str, "if") == 0) return BAT_TOKEN_TYPE_IF;
     if (strcmp(str, "set") == 0) return BAT_TOKEN_TYPE_SET;
     if (strcmp(str, "=") == 0) return BAT_TOKEN_TYPE_SET;
     if (strcmp(str, "isset") == 0) return BAT_TOKEN_TYPE_ISSET;
+    if (strcmp(str, "debug") == 0) return BAT_TOKEN_TYPE_DEBUG;
+
+    if (strcmp(str, "rem") == 0) return BAT_TOKEN_TYPE_COMMENT;
+    if (strcmp(str, "::") == 0)  return BAT_TOKEN_TYPE_COMMENT;
 
     if (strcmp(str, "on") == 0 || strcmp(str, "true") == 0 || strcmp(str, "enabled") == 0) return BAT_TOKEN_TYPE_TRUE;
     if (strcmp(str, "off") == 0 || strcmp(str, "false") == 0 || strcmp(str, "disabled") == 0) return BAT_TOKEN_TYPE_FALSE;
@@ -244,8 +248,10 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
                 bat_add_token(group, (size_t) xtok);
             } else {
                 BAT_TOKEN_TYPE type = bat_parse_token(exp[u]);
-                BAT_TOKEN_T* xtok = bat_create_token(type, exp[u]);
-                bat_add_token(group, (size_t) xtok);
+                if (type != BAT_TOKEN_TYPE_COMMENT){
+                    BAT_TOKEN_T* xtok = bat_create_token(type, exp[u]);
+                    bat_add_token(group, (size_t) xtok);
+                }
             }
 
         }
@@ -293,11 +299,12 @@ int main() {
     printf("========================\n");
 
     int ret = bat_runtime_exec(token);
-    printf("\n========================\n");
     printf("BAT LEX INFO\n");
     printf("Echo: %d\n", token->Echo);
+    printf("Debug: %d\n", token->Debug);
     printf("Error: %d\n", token->ErrorCode);
     printf("Count: %d\n", token->Size);
+    printf("\n========================\n");
     printf("RETURN CODE: %d\n",ret);
     return 0;
 }
