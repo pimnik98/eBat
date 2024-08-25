@@ -1,3 +1,4 @@
+echo on
 echo "hello batch files"
 if 2 > 1 echo "demobust"
 SET MyFolder = "examples"

@@ -11,3 +11,7 @@ build:
 run:
 	chmod 0777 $(OUTPUT_NAME)
 	./$(OUTPUT_NAME)
+
+log:
+	chmod 0777 $(OUTPUT_NAME)
+	./$(OUTPUT_NAME) > ebat.log

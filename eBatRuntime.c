@@ -50,7 +50,7 @@ int bat_runtime_equal(int Line, BAT_TOKEN_T* Data1, BAT_TOKEN_T* Eq, BAT_TOKEN_T
     return 0;
 }
 
-int bat_runtime_eval(BAT_GROUP_T* group, int line, int offset) {
+int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
     if (group->Size <= 0) {
         return 0;
     }
@@ -89,7 +89,7 @@ int bat_runtime_eval(BAT_GROUP_T* group, int line, int offset) {
 
             int breq = bat_runtime_fileio_exist(Path);
             if (breq == 1){
-                bat_runtime_eval(group, line, offset + 4);
+                bat_runtime_eval(bat, group, line, offset + 4);
             }
 
             printf("breq: %d | xret\n", breq);
@@ -99,7 +99,7 @@ int bat_runtime_eval(BAT_GROUP_T* group, int line, int offset) {
 
             int breq = bat_runtime_equal(line, Data1, Data2, Data3);
             if (breq == 1){
-                bat_runtime_eval(group, line, offset + 4);
+                bat_runtime_eval(bat, group, line, offset + 4);
             }
             printf("breq: %d | xret\n", breq);
 
@@ -121,7 +121,7 @@ int bat_runtime_exec(BAT_T* bat){
         printf("[%d | %d] \n", x+1, bat->Size);
         BAT_GROUP_T* group = (BAT_GROUP_T*) bat->Group[x];
 
-        ret = bat_runtime_eval(group, x + 1, 0);
+        ret = bat_runtime_eval(bat, group, x + 1, 0);
         if (ret < 0) {
             return (-1 * ret);
         }
@@ -133,5 +133,6 @@ int bat_runtime_exec(BAT_T* bat){
 
     }
     printf("========================\n");
+    bat->ErrorCode = ret;
     return ret;
 }

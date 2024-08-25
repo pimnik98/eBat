@@ -7,6 +7,8 @@
 *.obj
 *.elf
 
+*.log
+
 # Linker output
 *.ilk
 *.map
@@ -46,6 +48,7 @@
 *.mod*
 *.cmd
 .tmp_versions/
+cmake-build-debug/
 modules.order
 Module.symvers
 Mkfile.old

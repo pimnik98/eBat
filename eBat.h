@@ -51,7 +51,7 @@ typedef struct BAT_GROUP {
 } BAT_GROUP_T;
 
 typedef struct BAT {
-    int State;
+    int Echo;
     int ErrorCode;
     int Size;
     int Capacity;

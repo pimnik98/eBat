@@ -170,7 +170,10 @@ char* bat_debug_type(BAT_TOKEN_TYPE Type){
 }
 // Функция для определения типа лексемы
 BAT_TOKEN_TYPE bat_parse_token(char* str) {
+    bat_trim(str);
     str = bat_toLower(str);
+    //bat_str_debug(str);
+    printf("str: '%s'\n",str);
 
     if (strcmp(str, "echo") == 0) return BAT_TOKEN_TYPE_ECHO;
     if (strcmp(str, "if") == 0) return BAT_TOKEN_TYPE_IF;
@@ -251,7 +254,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
     }
     if (inString) {
         currentString = realloc(currentString, (strlen(currentString) + 1) * sizeof(char));
-        currentString[strlen(currentString) - 2] = '\0';
+        currentString[strlen(currentString) - 1] = '\0';
         inString = 0;
         BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_STRING, currentString);
         bat_add_token(group, (size_t) xtok);
@@ -285,16 +288,16 @@ BAT_T* bat_parse_string(char* String){
 }
 
 int main() {
-    char* batFile = readFile("examples/demo.bat");
+    char* batFile = readFile("examples/enabled.bat");
     BAT_T* token = bat_parse_string(batFile);
-    printf("\n========================\n");
-    printf("BAT LEX INFO\n");
-    printf("State: %d\n", token->State);
-    printf("Error: %d\n", token->ErrorCode);
-    printf("Count: %d\n", token->Size);
     printf("========================\n");
 
     int ret = bat_runtime_exec(token);
+    printf("\n========================\n");
+    printf("BAT LEX INFO\n");
+    printf("Echo: %d\n", token->Echo);
+    printf("Error: %d\n", token->ErrorCode);
+    printf("Count: %d\n", token->Size);
     printf("RETURN CODE: %d\n",ret);
     return 0;
 }
