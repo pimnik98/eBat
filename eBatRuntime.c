@@ -94,6 +94,20 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
         return (-1 * bat_strtol(Data1->value));
     }
 
+    if (MainTok->type == BAT_TOKEN_TYPE_SET) {
+        eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
+        EBAT_INVALIDARGC(line, group->Size - offset, 4);
+        BAT_TOKEN_T *VAR = (BAT_TOKEN_T *) group->Tokens[offset + 1];
+        BAT_TOKEN_T *EQ = (BAT_TOKEN_T *) group->Tokens[offset + 2];
+        BAT_TOKEN_T *SET = (BAT_TOKEN_T *) group->Tokens[offset + 3];
+        eBatCheckMixingData(line, EQ->type, BAT_TOKEN_TYPE_SET);
+        if (SET->type == BAT_TOKEN_TYPE_NOT){
+            bat_runtime_system_set(VAR->value, NULL);
+        } else {
+            eBatCheckMixingData(line, SET->type, BAT_TOKEN_TYPE_STRING);
+            bat_runtime_system_set(VAR->value, SET->value);
+        }
+    }
     if (MainTok->type == BAT_TOKEN_TYPE_ECHO) {
         EBAT_INVALIDARGC(line, group->Size - offset, 2);
         BAT_TOKEN_T *TextTok = (BAT_TOKEN_T *) group->Tokens[offset + 1];
@@ -107,9 +121,13 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
         } else if (TextTok->type == BAT_TOKEN_TYPE_STRING){
             bat_runtime_system_echo(TextTok->value);
         } else if (TextTok->type == BAT_TOKEN_TYPE_VARIABLE){
+            //printf("[line %d] 1\n", __LINE__);
             eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
+            //printf("[line %d] 2\n", __LINE__);
             eBatCheckVariable(line, TextTok->value, Text);
+            //printf("text: %s\n", Text);
             bat_runtime_system_echo(Text);
+            //printf("[line %d] 3\n", __LINE__);
         } else if (TextTok->type == BAT_TOKEN_TYPE_NUMBER){
             bat_runtime_system_echo(TextTok->value);
         }
@@ -155,9 +173,6 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
                 }
             }
 
-
-            bat_debug("breq: %d | xret\n", breq);
-
         } else if (Data1->type == BAT_TOKEN_TYPE_NUMBER) {
             EBAT_INVALIDMINARGC(line, group->Size - offset, offset + 4);
 
@@ -167,10 +182,6 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
             }
             bat_debug("breq: %d | xret\n", breq);
 
-
-
-            //bat_runtime_echo(TextTok->value);
-            // continue;
         }
     }
     return 0;

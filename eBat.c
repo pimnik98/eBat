@@ -3,72 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 #include "eBat.h"
+#include "eBatRuntime.h"
 
-char* readFile(const char* filename) {
-    FILE* file = fopen(filename, "r");
-    if (file == NULL) {
-        bat_debug("Error opening file: %s\n", filename);
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    rewind(file);
-
-    char* file_content = malloc(file_size + 1); // +1 для завершающего нулевого символа
-    memset(file_content, 0, (file_size + 1));
-    if (file_content == NULL) {
-        bat_debug("Memory allocation error\n");
-        fclose(file);
-        return NULL;
-    }
-
-    int read = fread(file_content, 1, file_size, file);
-    file_content[file_size] = '\0';
-    fclose(file);
-
-    return file_content;
-}
-int str_cdsp2(const char* a_str, char del){
-    int x = 0;
-    for(size_t i = 0, len = strlen(a_str); i < len; i++){
-        if (a_str[i] == del) {
-            x++;
-        }
-    }
-    return x;
-}
-char** explode(const char str[], char delimiter) {
-    int ccc = str_cdsp2(str, delimiter);
-    char** result = malloc(strlen(str)*2);
-    int y = 0;
-    int a = 0;
-
-    for (int b = 0; b <= ccc; b++) {
-        result[b] = malloc(strlen(str) * sizeof(char));
-    }
-
-    for (int i = 0; i < strlen(str); i++){
-        if (str[i] == delimiter){
-            result[a][y] = 0;
-            a++;
-            y = 0;
-            continue;
-        }
-        result[a][y] = str[i];
-        y++;
-    }
-
-    result[a][y] = 0;
-    return result;
-}
-
-char* bat_toLower(char* str) {
-    for (int i = 0; str[i] != '\0'; i++) {
-        str[i] = tolower(str[i]);
-    }
-    return str;
-}
 
 BAT_T* bat_create_session(){
     BAT_T* bat = calloc(1, sizeof *bat);
@@ -134,9 +70,11 @@ BAT_TOKEN_T* bat_create_token(BAT_TOKEN_TYPE type, char* value) {
     memset(token, 0, sizeof(BAT_TOKEN_T));
     token->type = type;
 
-    token->value = malloc(strlen(value)+1);
-    memset(token->value, 0, strlen(value)+1);
-    memcpy(token->value, value, strlen(value));
+    int len = strlen(value);
+
+    token->value = malloc(len + 1);
+    memset(token->value, 0, len + 1);
+    memcpy(token->value, value, len);
 
     //bat_fatalerror(0, "Get: '%s'\nIns: '%s'\n",token->value,value);
     return token;
@@ -165,7 +103,8 @@ char* bat_debug_type(BAT_TOKEN_TYPE Type){
         case BAT_TOKEN_TYPE_GREATER_EQUAL: return "GREATER_EQUAL";
 
         case BAT_TOKEN_TYPE_EXIT: return "EXIT";
-        default: return "VARIABLE";
+        case BAT_TOKEN_TYPE_VARIABLE: return "VARIABLE";
+        default: return "UNKNOWN";
     }
 }
 // Функция для определения типа лексемы
@@ -180,6 +119,7 @@ BAT_TOKEN_TYPE bat_parse_token(char* str) {
     if (strcmp(str, "=") == 0) return BAT_TOKEN_TYPE_SET;
     if (strcmp(str, "isset") == 0) return BAT_TOKEN_TYPE_ISSET;
     if (strcmp(str, "debug") == 0) return BAT_TOKEN_TYPE_DEBUG;
+    if (strcmp(str, "null") == 0) return BAT_TOKEN_TYPE_NOT;
 
     if (strcmp(str, "rem") == 0) return BAT_TOKEN_TYPE_COMMENT;
     if (strcmp(str, "::") == 0)  return BAT_TOKEN_TYPE_COMMENT;
@@ -216,6 +156,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
     char* currentString = NULL;
     for (int u = 0; u <= c; u++){
         bat_debug("    |--- [%u] %s\n", u, exp[u]);
+        bat_trim(exp[u]);
         size_t len = strlen(exp[u]);
         if (exp[u][0] == '"' && !inString && exp[u][len - 1] == '"'){
             currentString = malloc(len * sizeof(char) + 1 );
@@ -251,6 +192,8 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
                 strcat(currentString, exp[u]);
             }
         } else {
+            bat_str_debug(exp[u]);
+
             if (exp[u][0] == '%' && exp[u][len - 1] == '%'){
                 char* temp = malloc(len);
                 memset(temp, 0, len);
@@ -308,8 +251,9 @@ BAT_T* bat_parse_string(char* String){
     return bat;
 }
 
-int main() {
-    char* batFile = readFile("examples/if.bat");
+int main(int argc, char *argv[]) {
+    char* batFile = readFile((argc > 1?argv[1]:"examples/set.bat"));
+    printf("\nFile: %s\n", (argc > 1?argv[1]:"examples/set.bat"));
 
     BAT_T* token = bat_parse_string(batFile);
     token->Debug = 1;

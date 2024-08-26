@@ -58,5 +58,9 @@ int bat_runtime_fileio_exist(char* path);
 int bat_strtol(char *string);
 void bat_trim(char* string);
 void bat_str_debug(char* string);
+char* bat_toLower(char* str);
+char** explode(const char str[], char delimiter);
+int str_cdsp2(const char* a_str, char del);
+char* readFile(const char* filename);
 
 #endif //EBAT_RUNTIME_H

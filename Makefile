@@ -23,3 +23,9 @@ run:
 log:
 	chmod 0777 $(OUTPUT_NAME)
 	./$(OUTPUT_NAME) > ebat.log
+
+tests:
+	-@./$(OUTPUT_NAME) "./examples/demo.bat"
+	-@./$(OUTPUT_NAME) "./examples/enabled.bat"
+	-@./$(OUTPUT_NAME) "./examples/if.bat"
+	-@./$(OUTPUT_NAME) "./examples/set.bat"

@@ -49,3 +49,69 @@ void bat_str_debug(char* string){
         bat_debug("        |--- [%d | %d] [0x%x] '%c'\n", i+1, len, string[i], string[i]);
     }
 }
+
+char* readFile(const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        bat_debug("Error opening file: %s\n", filename);
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    rewind(file);
+
+    char* file_content = malloc(file_size + 1); // +1 для завершающего нулевого символа
+    memset(file_content, 0, (file_size + 1));
+    if (file_content == NULL) {
+        bat_debug("Memory allocation error\n");
+        fclose(file);
+        return NULL;
+    }
+
+    int read = fread(file_content, 1, file_size, file);
+    file_content[file_size] = '\0';
+    fclose(file);
+
+    return file_content;
+}
+int str_cdsp2(const char* a_str, char del){
+    int x = 0;
+    for(size_t i = 0, len = strlen(a_str); i < len; i++){
+        if (a_str[i] == del) {
+            x++;
+        }
+    }
+    return x;
+}
+char** explode(const char str[], char delimiter) {
+    int ccc = str_cdsp2(str, delimiter);
+    char** result = malloc(strlen(str)*2);
+    int y = 0;
+    int a = 0;
+
+    for (int b = 0; b <= ccc; b++) {
+        result[b] = malloc(strlen(str) * sizeof(char));
+    }
+
+    for (int i = 0; i < strlen(str); i++){
+        if (str[i] == delimiter){
+            result[a][y] = 0;
+            a++;
+            y = 0;
+            continue;
+        }
+        result[a][y] = str[i];
+        y++;
+    }
+
+    result[a][y] = 0;
+    return result;
+}
+
+char* bat_toLower(char* str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        str[i] = tolower(str[i]);
+    }
+    return str;
+}

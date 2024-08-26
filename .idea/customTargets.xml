@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="4288641c-8326-415b-b04b-b7c2d3ee636c" name="MinGW" defaultType="TOOL">
+      <configuration id="f95f3124-efc1-4f51-8edd-c38a83a87e70" name="MinGW" toolchainName="MinGW" />
+    </target>
+  </component>
+</project>
