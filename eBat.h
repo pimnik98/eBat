@@ -1,10 +1,21 @@
+#ifndef DEBUG
+#define bat_debug(M, ...) \
+
+#endif
+
+
+#ifdef DEBUG
+#define bat_debug(M, ...) \
+    printf("[Line %d] " M "", __LINE__, ##__VA_ARGS__);
+#endif // DEBUG
+
+
 #ifndef EBAT_H
 #define EBAT_H
 
 #include <stdarg.h>
 #define bat_fatalerror(Line, M, ...) \
     printf("\033[31;1mError on line %d: " M "\033[0m\n", Line, ##__VA_ARGS__)
-
 
 
 typedef enum {

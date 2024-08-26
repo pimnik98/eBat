@@ -10,7 +10,7 @@
  */
 int bat_runtime_fileio_exist(char* path){
     /// Insert your code
-    printf("[RUNTIME] [FileIO] [Exits] %s\n", path);
+    bat_debug("[RUNTIME] [FileIO] [Exits] %s\n", path);
 
     return 0;
 }

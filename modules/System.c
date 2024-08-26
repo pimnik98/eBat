@@ -8,7 +8,7 @@
  */
 int bat_runtime_system_cls(){
     /// Insert your code
-    printf("[RUNTIME] [System] [CLS] \n");
+    bat_debug("[RUNTIME] [System] [CLS] \n");
 
     return 0;
 }
@@ -20,7 +20,7 @@ int bat_runtime_system_cls(){
  */
 void bat_runtime_system_echo(char* text){
     /// Insert your code to execute the "echo" command
-    printf("[RUNTIME] [System] [ECHO] %s\n", text);
+    bat_debug("[RUNTIME] [System] [ECHO] %s\n", text);
 }
 
 /**
@@ -30,7 +30,7 @@ void bat_runtime_system_echo(char* text){
  */
 void bat_runtime_system_set(char* key, char* val){
     /// Insert your code
-    printf("[RUNTIME] [System] [SET] '%s' => '%s'\n", key, val);
+    bat_debug("[RUNTIME] [System] [SET] '%s' => '%s'\n", key, val);
 }
 
 /**
@@ -39,6 +39,6 @@ void bat_runtime_system_set(char* key, char* val){
  */
 char* bat_runtime_system_get(char* key){
     /// Insert your code
-    printf("[RUNTIME] [System] [GET] '%s'\n", key);
+    bat_debug("[RUNTIME] [System] [GET] '%s'\n", key);
     return NULL;
 }

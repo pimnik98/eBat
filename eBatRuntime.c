@@ -22,7 +22,7 @@ void bat_runtime_echo(BAT_T* bat,BAT_GROUP_T* group){
     if (bat->Debug == 1){
         for (int y = 0; y < group->Size; y++){
             BAT_TOKEN_T* xtok = (BAT_TOKEN_T*) group->Tokens[y];
-            printf(" |--- [%d | %d] Tok: [%d] %s | Val: %s \n", y+1, group->Size,  xtok->type, bat_debug_type(xtok->type), xtok->value);
+            bat_debug(" |--- [%d | %d] Tok: [%d] %s | Val: %s \n", y+1, group->Size,  xtok->type, bat_debug_type(xtok->type), xtok->value);
         }
     }
 }
@@ -129,7 +129,7 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
                 bat_runtime_eval(bat, group, line, offset + 4);
             }
 
-            printf("breq: %d | xret\n", breq);
+            bat_debug("breq: %d | xret\n", breq);
 
         } else if (Data1->type == BAT_TOKEN_TYPE_NUMBER) {
             EBAT_INVALIDMINARGC(line, group->Size - offset, offset + 4);
@@ -138,7 +138,7 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
             if (breq == 1){
                 bat_runtime_eval(bat, group, line, offset + 4);
             }
-            printf("breq: %d | xret\n", breq);
+            bat_debug("breq: %d | xret\n", breq);
 
 
 
@@ -150,9 +150,9 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
 }
 
 int bat_runtime_exec(BAT_T* bat){
-    printf("========================\n");
-    printf("Runtime EXEC\n");
-    printf("========================\n");
+    bat_debug("========================\n");
+    bat_debug("Runtime EXEC\n");
+    bat_debug("========================\n");
     int ret = 0;
     for (int x = 0; x < bat->Size; x++){
         BAT_GROUP_T* group = (BAT_GROUP_T*) bat->Group[x];
@@ -166,6 +166,6 @@ int bat_runtime_exec(BAT_T* bat){
 
     }
     bat->ErrorCode = ret;
-    printf("========================\n");
+    bat_debug("========================\n");
     return ret;
 }

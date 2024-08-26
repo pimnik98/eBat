@@ -43,9 +43,9 @@ void bat_trim(char* string){
 }
 
 void bat_str_debug(char* string){
-    printf("      |--- String debug: '%s'\n", string);
+    bat_debug("      |--- String debug: '%s'\n", string);
     int len = strlen(string);
     for (int i = 0; i < len; i++){
-        printf("        |--- [%d | %d] [0x%x] '%c'\n", i+1, len, string[i], string[i]);
+        bat_debug("        |--- [%d | %d] [0x%x] '%c'\n", i+1, len, string[i], string[i]);
     }
 }

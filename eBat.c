@@ -7,7 +7,7 @@
 char* readFile(const char* filename) {
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
-        fprintf(stderr, "Error opening file: %s\n", filename);
+        bat_debug("Error opening file: %s\n", filename);
         return NULL;
     }
 
@@ -18,7 +18,7 @@ char* readFile(const char* filename) {
     char* file_content = malloc(file_size + 1); // +1 для завершающего нулевого символа
     memset(file_content, 0, (file_size + 1));
     if (file_content == NULL) {
-        fprintf(stderr, "Memory allocation error\n");
+        bat_debug("Memory allocation error\n");
         fclose(file);
         return NULL;
     }
@@ -173,7 +173,6 @@ BAT_TOKEN_TYPE bat_parse_token(char* str) {
     bat_trim(str);
     str = bat_toLower(str);
     bat_str_debug(str);
-    //printf("str: '%s'\n",str);
 
     if (strcmp(str, "echo") == 0) return BAT_TOKEN_TYPE_ECHO;
     if (strcmp(str, "if") == 0) return BAT_TOKEN_TYPE_IF;
@@ -216,7 +215,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
 
     char* currentString = NULL;
     for (int u = 0; u <= c; u++){
-        printf("    |--- [%u] %s\n", u, exp[u]);
+        bat_debug("    |--- [%u] %s\n", u, exp[u]);
         size_t len = strlen(exp[u]);
         if (exp[u][0] == '"' && !inString && exp[u][len - 1] == '"'){
             currentString = malloc(len * sizeof(char) + 1 );
@@ -226,7 +225,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
             currentString[len - 1] = '\0';
             //inString = 0;
             BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_STRING, currentString);
-            printf("create token string method 1: '%s'\n", currentString);
+            bat_debug("create token string method 1: '%s'\n", currentString);
             bat_add_token(group, (size_t) xtok);
             free(currentString);
         } else if (exp[u][0] == '"' && !inString) {
@@ -243,7 +242,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
                 inString = 0;
                 BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_STRING, currentString);
 
-                printf("create token string method 2: '%s'\n", currentString);
+                bat_debug("create token string method 2: '%s'\n", currentString);
                 bat_add_token(group, (size_t) xtok);
                 free(currentString);
             } else {
@@ -256,12 +255,12 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
                 char* temp = malloc(len);
                 memset(temp, 0, len);
                 memcpy(temp, exp[u] + 1, len - 2);
-                printf("create token variable method 1: '%s'\n", currentString);
+                bat_debug("create token variable method 1: '%s'\n", currentString);
                 BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_VARIABLE, temp);
                 bat_add_token(group, (size_t) xtok);
             } else {
                 BAT_TOKEN_TYPE type = bat_parse_token(exp[u]);
-                printf("[AUTO_DETECT TYPE] Type: %s | Str: '%s'\n", bat_debug_type(type), exp[u]);
+                bat_debug("[AUTO_DETECT TYPE] Type: %s | Str: '%s'\n", bat_debug_type(type), exp[u]);
                 if (type != BAT_TOKEN_TYPE_COMMENT){
                     BAT_TOKEN_T* xtok = bat_create_token(type, exp[u]);
                     bat_add_token(group, (size_t) xtok);
@@ -277,7 +276,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
         currentString[strlen(currentString) - 2] = '\0';
         inString = 0;
 
-        printf("create token string method 3: '%s'\n", currentString);
+        bat_debug("create token string method 3: '%s'\n", currentString);
         BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_STRING, currentString);
         bat_add_token(group, (size_t) xtok);
 
@@ -292,14 +291,14 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
 }
 BAT_T* bat_parse_string(char* String){
     BAT_T* bat = bat_create_session();
-    printf("\n========================\n");
-    printf("%s", String);
-    printf("\n========================\n");
+    bat_debug("\n========================\n");
+    bat_debug("%s", String);
+    bat_debug("\n========================\n");
 
     int cLine = str_cdsp2(String, '\n');
     char** Line = explode(String, '\n');
     for (int uL = 0; uL <= cLine; uL++){
-        printf("[LINE %d | %d] %s\n", uL +1, cLine +1, Line[uL]);
+        bat_debug("[LINE %d | %d] %s\n", uL +1, cLine +1, Line[uL]);
 
         BAT_GROUP_T* group = bat_parse_line(bat, Line[uL]);
         bat_add_group(bat, (size_t) group);
@@ -315,15 +314,15 @@ int main() {
     BAT_T* token = bat_parse_string(batFile);
     token->Debug = 1;
     token->Echo = 1;
-    printf("========================\n");
+    bat_debug("========================\n");
 
     int ret = bat_runtime_exec(token);
-    printf("BAT LEX INFO\n");
-    printf("Echo: %d\n", token->Echo);
-    printf("Debug: %d\n", token->Debug);
-    printf("Error: %d\n", token->ErrorCode);
-    printf("Count: %d\n", token->Size);
-    printf("\n========================\n");
-    printf("RETURN CODE: %d\n",ret);
+    bat_debug("BAT LEX INFO\n");
+    bat_debug("Echo: %d\n", token->Echo);
+    bat_debug("Debug: %d\n", token->Debug);
+    bat_debug("Error: %d\n", token->ErrorCode);
+    bat_debug("Count: %d\n", token->Size);
+    bat_debug("\n========================\n");
+    bat_debug("RETURN CODE: %d\n",ret);
     return 0;
 }
