@@ -49,6 +49,7 @@
 *.cmd
 .tmp_versions/
 cmake-build-debug/
+.idea/
 modules.order
 Module.symvers
 Mkfile.old
