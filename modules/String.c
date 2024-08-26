@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 #include "../eBat.h"
 #include "../eBatRuntime.h"
@@ -42,9 +43,9 @@ void bat_trim(char* string){
 }
 
 void bat_str_debug(char* string){
-    printf("String debug: '%s'\n", string);
+    printf("      |--- String debug: '%s'\n", string);
     int len = strlen(string);
     for (int i = 0; i < len; i++){
-        printf("[%d | %d] [0x%x] '%c'\n", i+1, len, string[i], string[i]);
+        printf("        |--- [%d | %d] [0x%x] '%c'\n", i+1, len, string[i], string[i]);
     }
 }

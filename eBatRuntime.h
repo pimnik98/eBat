@@ -51,4 +51,11 @@ int bat_runtime_system_cls();
 void bat_runtime_system_echo(char* text);
 void bat_runtime_system_set(char* key, char* val);
 char* bat_runtime_system_get(char* key);
+
+int bat_runtime_fileio_exist(char* path);
+
+int bat_strtol(char *string);
+void bat_trim(char* string);
+void bat_str_debug(char* string);
+
 #endif //EBAT_RUNTIME_H

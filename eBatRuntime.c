@@ -9,7 +9,7 @@ void bat_runtime_echo(BAT_T* bat,BAT_GROUP_T* group){
         for (int i = 0; i < group->Size; i++){
             BAT_TOKEN_T *Line = (BAT_TOKEN_T *) group->Tokens[i];
             if (Line->type == BAT_TOKEN_TYPE_VARIABLE) {
-                printf("%%s% ", Line->value);
+                printf("%c%s%c ", '%', Line->value,'%');
             } else if (Line->type == BAT_TOKEN_TYPE_STRING) {
                 printf("\"%s\" ", Line->value);
             } else {

@@ -172,7 +172,7 @@ char* bat_debug_type(BAT_TOKEN_TYPE Type){
 BAT_TOKEN_TYPE bat_parse_token(char* str) {
     bat_trim(str);
     str = bat_toLower(str);
-    //bat_str_debug(str);
+    bat_str_debug(str);
     //printf("str: '%s'\n",str);
 
     if (strcmp(str, "echo") == 0) return BAT_TOKEN_TYPE_ECHO;
@@ -189,7 +189,7 @@ BAT_TOKEN_TYPE bat_parse_token(char* str) {
     if (strcmp(str, "off") == 0 || strcmp(str, "false") == 0 || strcmp(str, "disabled") == 0) return BAT_TOKEN_TYPE_FALSE;
 
 
-    if (strcmp(str, "[not]") == 0) return BAT_TOKEN_TYPE_NOT;
+    if (strcmp(str, "not") == 0) return BAT_TOKEN_TYPE_NOT;
     if (strcmp(str, "exist") == 0) return BAT_TOKEN_TYPE_EXIST;
     if (strcmp(str, "exit") == 0) return BAT_TOKEN_TYPE_EXIT;
 
@@ -218,7 +218,18 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
     for (int u = 0; u <= c; u++){
         printf("    |--- [%u] %s\n", u, exp[u]);
         size_t len = strlen(exp[u]);
-        if (exp[u][0] == '"' && !inString) {
+        if (exp[u][0] == '"' && !inString && exp[u][len - 1] == '"'){
+            currentString = malloc(len * sizeof(char) + 1 );
+            memset(currentString, 0, len * sizeof(char) + 1);
+            memcpy(currentString, exp[u] + 1 , len - 2);
+
+            currentString[len - 1] = '\0';
+            //inString = 0;
+            BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_STRING, currentString);
+            printf("create token string method 1: '%s'\n", currentString);
+            bat_add_token(group, (size_t) xtok);
+            free(currentString);
+        } else if (exp[u][0] == '"' && !inString) {
             inString = 1;
             currentString = malloc(len * sizeof(char));
             memset(currentString, 0, len * sizeof(char));
@@ -231,6 +242,8 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
                 currentString[strlen(currentString) - 1] = '\0';
                 inString = 0;
                 BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_STRING, currentString);
+
+                printf("create token string method 2: '%s'\n", currentString);
                 bat_add_token(group, (size_t) xtok);
                 free(currentString);
             } else {
@@ -243,11 +256,12 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
                 char* temp = malloc(len);
                 memset(temp, 0, len);
                 memcpy(temp, exp[u] + 1, len - 2);
-
+                printf("create token variable method 1: '%s'\n", currentString);
                 BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_VARIABLE, temp);
                 bat_add_token(group, (size_t) xtok);
             } else {
                 BAT_TOKEN_TYPE type = bat_parse_token(exp[u]);
+                printf("[AUTO_DETECT TYPE] Type: %s | Str: '%s'\n", bat_debug_type(type), exp[u]);
                 if (type != BAT_TOKEN_TYPE_COMMENT){
                     BAT_TOKEN_T* xtok = bat_create_token(type, exp[u]);
                     bat_add_token(group, (size_t) xtok);
@@ -260,8 +274,10 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
     }
     if (inString) {
         currentString = realloc(currentString, (strlen(currentString) + 1) * sizeof(char));
-        currentString[strlen(currentString) - 1] = '\0';
+        currentString[strlen(currentString) - 2] = '\0';
         inString = 0;
+
+        printf("create token string method 3: '%s'\n", currentString);
         BAT_TOKEN_T* xtok = bat_create_token(BAT_TOKEN_TYPE_STRING, currentString);
         bat_add_token(group, (size_t) xtok);
 
@@ -294,8 +310,11 @@ BAT_T* bat_parse_string(char* String){
 }
 
 int main() {
-    char* batFile = readFile("examples/enabled.bat");
+    char* batFile = readFile("examples/if.bat");
+
     BAT_T* token = bat_parse_string(batFile);
+    token->Debug = 1;
+    token->Echo = 1;
     printf("========================\n");
 
     int ret = bat_runtime_exec(token);
