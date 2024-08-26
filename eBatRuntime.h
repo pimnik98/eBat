@@ -3,7 +3,7 @@
 
 /////////////////////////
 /// Поле конфигурации eBR
-
+#define EBAT_CONFIG_CRITICAL_STOP   1       ///< Остановить выполнение скрипта, при наличии ошибок (Рекомендуется оставить 1)
 #define EBAT_CONFIG_FILEIO_EXIST    1       ///< Настроен FileIO.Exist (Проверка наличия файла или папки)
 #define EBAT_CONFIG_SYSTEM_SET      1       ///< Настроен System.Set (Получение и установка окружения системы)
 

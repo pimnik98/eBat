@@ -6,7 +6,7 @@ all:
 	$(MAKE) build
 
 debug:
-	$(MAKE) build -DDEBUG
+	gcc $(SRC_MAIN) -o $(OUTPUT_NAME) -Wall -g -O0 -DDEBUG
 
 build:
 	gcc $(SRC_MAIN) -o $(OUTPUT_NAME) -Wall -g -Wunused-variable -O0

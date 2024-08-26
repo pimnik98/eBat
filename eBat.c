@@ -324,5 +324,5 @@ int main() {
     bat_debug("Count: %d\n", token->Size);
     bat_debug("\n========================\n");
     bat_debug("RETURN CODE: %d\n",ret);
-    return 0;
+    return ret;
 }

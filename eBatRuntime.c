@@ -114,9 +114,17 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
     if (MainTok->type == BAT_TOKEN_TYPE_IF) {
         EBAT_INVALIDMINARGC(line, group->Size - offset, 3);
 
-        BAT_TOKEN_T *Data1 = (BAT_TOKEN_T *) group->Tokens[offset + 1];
-        BAT_TOKEN_T *Data2 = (BAT_TOKEN_T *) group->Tokens[offset + 2];
-        BAT_TOKEN_T *Data3 = (BAT_TOKEN_T *) group->Tokens[offset + 3];
+        int isNOT = 0;
+
+        BAT_TOKEN_T *DataNOT = (BAT_TOKEN_T *) group->Tokens[offset + 1];
+        if (DataNOT->type == BAT_TOKEN_TYPE_NOT){
+            isNOT = 1;
+        }
+
+
+        BAT_TOKEN_T *Data1 = (BAT_TOKEN_T *) group->Tokens[offset + isNOT + 1];
+        BAT_TOKEN_T *Data2 = (BAT_TOKEN_T *) group->Tokens[offset + isNOT + 2];
+        BAT_TOKEN_T *Data3 = (BAT_TOKEN_T *) group->Tokens[offset + isNOT + 3];
 
         if (Data1->type == BAT_TOKEN_TYPE_EXIST) {
             eBatCheckModule(line, EBAT_CONFIG_FILEIO_EXIST, "FileIO.Exits");
@@ -125,8 +133,9 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
             eBatCheckVariable(line, Data2->value, Path);
 
             int breq = bat_runtime_fileio_exist(Path);
-            if (breq == 1){
-                bat_runtime_eval(bat, group, line, offset + 4);
+            if ((breq == 1 && isNOT == 0) ||
+                (breq != 1 && isNOT == 1)){
+                bat_runtime_eval(bat, group, line, offset + isNOT + 4);
             }
 
             bat_debug("breq: %d | xret\n", breq);
@@ -160,8 +169,11 @@ int bat_runtime_exec(BAT_T* bat){
         bat_runtime_echo(bat, group);
 
         ret = bat_runtime_eval(bat, group, x + 1, 0);
-        if (ret < 0) {
-            return (-1 * ret);
+        bat_debug("line: %d | ret: %d\n", x +1, ret);
+        if (EBAT_CONFIG_CRITICAL_STOP == 1 && ret > 0) {
+            bat_debug("CRITICAL OUT\n");
+            //bat->ErrorCode = ret;
+            break;
         }
 
     }
