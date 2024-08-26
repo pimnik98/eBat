@@ -6,6 +6,7 @@
 
 void bat_runtime_echo(BAT_T* bat,BAT_GROUP_T* group){
      if (bat->Echo == 1){
+         printf("%s ", EBAT_CONFIG_HELLO_LINE);
         for (int i = 0; i < group->Size; i++){
             BAT_TOKEN_T *Line = (BAT_TOKEN_T *) group->Tokens[i];
             if (Line->type == BAT_TOKEN_TYPE_VARIABLE) {
@@ -75,15 +76,18 @@ int bat_runtime_equal(int Line, BAT_TOKEN_T* Data1, BAT_TOKEN_T* Eq, BAT_TOKEN_T
 
 int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
     if (group->Size <= 0) {
+        bat_debug("Group Size is 0\n");
         return 0;
     }
 
     BAT_TOKEN_T *MainTok = (BAT_TOKEN_T *) group->Tokens[offset + 0];
 
     if (MainTok->type == BAT_TOKEN_TYPE_UNKNOWN) {
+        bat_debug("Unknown data???\n");
         return 0;
     }
 
+    bat_debug("[%d] MainTok == %s\n", offset, bat_debug_type(MainTok->type));
     if (MainTok->type == BAT_TOKEN_TYPE_EXIT) {
         EBAT_INVALIDARGC(line, group->Size - offset, 2);
         BAT_TOKEN_T *Data1 = (BAT_TOKEN_T *) group->Tokens[offset + 1];
@@ -93,6 +97,7 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
     if (MainTok->type == BAT_TOKEN_TYPE_ECHO) {
         EBAT_INVALIDARGC(line, group->Size - offset, 2);
         BAT_TOKEN_T *TextTok = (BAT_TOKEN_T *) group->Tokens[offset + 1];
+        //printf("TextTok is %s => '%s'\n", bat_debug_type(TextTok->type), TextTok->value);
         if (TextTok->type == BAT_TOKEN_TYPE_DEBUG){
             bat->Debug = !(bat->Debug);
         } else if (TextTok->type == BAT_TOKEN_TYPE_TRUE){
@@ -128,15 +133,28 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
 
         if (Data1->type == BAT_TOKEN_TYPE_EXIST) {
             eBatCheckModule(line, EBAT_CONFIG_FILEIO_EXIST, "FileIO.Exits");
-            eBatCheckMixingData(line, Data2->type, BAT_TOKEN_TYPE_VARIABLE);
-            eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
-            eBatCheckVariable(line, Data2->value, Path);
+            if (Data2->type == BAT_TOKEN_TYPE_STRING){
+                int breq = bat_runtime_fileio_exist(Data2->value);
+                bat_debug("IF EXIST STRING: %d | %d\n", breq, (breq == 1 && isNOT == 0) ||
+                                                      (breq != 1 && isNOT == 1));
+                if ((breq == 1 && isNOT == 0) ||
+                    (breq != 1 && isNOT == 1)){
+                    bat_debug("Start eval %d\n", offset + isNOT + 3);
+                    bat_runtime_eval(bat, group, line, offset + isNOT + 3);
+                }
+            } else {
+                eBatCheckMixingData(line, Data2->type, BAT_TOKEN_TYPE_VARIABLE);
+                eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
+                eBatCheckVariable(line, Data2->value, Path);
 
-            int breq = bat_runtime_fileio_exist(Path);
-            if ((breq == 1 && isNOT == 0) ||
-                (breq != 1 && isNOT == 1)){
-                bat_runtime_eval(bat, group, line, offset + isNOT + 4);
+                int breq = bat_runtime_fileio_exist(Path);
+                bat_debug("IF EXIST VARIABLE: %d\n", breq);
+                if ((breq == 1 && isNOT == 0) ||
+                    (breq != 1 && isNOT == 1)){
+                    bat_runtime_eval(bat, group, line, offset + isNOT + 3);
+                }
             }
+
 
             bat_debug("breq: %d | xret\n", breq);
 
@@ -145,7 +163,7 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
 
             int breq = bat_runtime_equal(line, Data1, Data2, Data3);
             if (breq == 1){
-                bat_runtime_eval(bat, group, line, offset + 4);
+                bat_runtime_eval(bat, group, line, offset + 3);
             }
             bat_debug("breq: %d | xret\n", breq);
 

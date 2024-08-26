@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "../eBat.h"
-#include "../eBatRuntime.h"
+#include "../../eBat.h"
+#include "../../eBatRuntime.h"
 
 /**
  * Обнуление экрана
@@ -21,6 +21,7 @@ int bat_runtime_system_cls(){
 void bat_runtime_system_echo(char* text){
     /// Insert your code to execute the "echo" command
     bat_debug("[RUNTIME] [System] [ECHO] %s\n", text);
+    printf("< %s\n", text);
 }
 
 /**

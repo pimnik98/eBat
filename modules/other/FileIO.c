@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "../eBat.h"
-#include "../eBatRuntime.h"
+#include "../../eBat.h"
+#include "../../eBatRuntime.h"
 
 /**
  * Проверка наличии файла или папки
