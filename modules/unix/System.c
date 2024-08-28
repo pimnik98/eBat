@@ -12,14 +12,12 @@ typedef struct BAT_SET {
 
 BAT_SET_T __bat_set_data__[256] = {0};
 
-/**
- * Обнуление экрана
- * @module System.CLS
- */
-int bat_runtime_system_cls(){
-    /// Insert your code
-    bat_debug("[RUNTIME] [System] [CLS] \n");
-
+int bar_runtime_system_exec(int argc, char** argv){
+    /// Insert your code to execute the "echo" command
+    bat_debug("[RUNTIME] [System] [EXEC] Count: %d\n", argc);
+    for (int i = 0; i < argc; i++){
+        printf("[%d | %d] '%s'\n", i + 1, argc, argv[i]);
+    }
     return 0;
 }
 

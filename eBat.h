@@ -42,11 +42,22 @@ typedef enum {
     BAT_TOKEN_TYPE_LESS_EQUAL,      ///< Оператор сравнения <=
     BAT_TOKEN_TYPE_GREATER_EQUAL,   ///< Оператор сравнения >=
 
+    // Операторы циклов
+    BAT_TOKEN_TYPE_FOR,
+    BAT_TOKEN_TYPE_WHILE,
+    BAT_TOKEN_TYPE_DO,
+    BAT_TOKEN_TYPE_IN,
+    BAT_TOKEN_TYPE_STEP,
+    BAT_TOKEN_TYPE_BREAK,
+    BAT_TOKEN_TYPE_CONTINUE,
+
     BAT_TOKEN_TYPE_STRING,          ///< Тип данных строка
     BAT_TOKEN_TYPE_NUMBER,          ///< Тип данных число
     BAT_TOKEN_TYPE_OPERATOR,        ///< Тип данных оператор
     BAT_TOKEN_TYPE_VARIABLE,        ///< Тип данных переменная
     BAT_TOKEN_TYPE_COMMENT,         ///< Комментарий (рекомендуется игнорировать!!!)
+    BAT_TOKEN_TYPE_START,           ///< Запуск программы
+    BAT_TOKEN_TYPE_ALIAS,           ///< Алиас
     BAT_TOKEN_TYPE_UNKNOWN          ///< Тип данных неизвестно
 } BAT_TOKEN_TYPE;
 

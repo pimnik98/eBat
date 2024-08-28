@@ -29,3 +29,4 @@ tests:
 	-@./$(OUTPUT_NAME) "./examples/enabled.bat"
 	-@./$(OUTPUT_NAME) "./examples/if.bat"
 	-@./$(OUTPUT_NAME) "./examples/set.bat"
+	-@./$(OUTPUT_NAME) "./examples/run.bat"

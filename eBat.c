@@ -86,14 +86,11 @@ char* bat_debug_type(BAT_TOKEN_TYPE Type){
         case BAT_TOKEN_TYPE_SET: return "SET";
         case BAT_TOKEN_TYPE_TRUE: return "TRUE";
         case BAT_TOKEN_TYPE_FALSE: return "FALSE";
-
         case BAT_TOKEN_TYPE_NOT: return "NOT";
         case BAT_TOKEN_TYPE_EXIST: return "EXIST";
         case BAT_TOKEN_TYPE_ISSET: return "ISSET";
-
         case BAT_TOKEN_TYPE_STRING: return "STRING";
         case BAT_TOKEN_TYPE_NUMBER: return "NUMBER";
-
         case BAT_TOKEN_TYPE_OPERATOR: return "OPERATOR";
         case BAT_TOKEN_TYPE_EQUAL: return "EQUAL";
         case BAT_TOKEN_TYPE_NOT_EQUAL: return "NOT_EQUAL";
@@ -101,9 +98,19 @@ char* bat_debug_type(BAT_TOKEN_TYPE Type){
         case BAT_TOKEN_TYPE_LESS: return "LESS";
         case BAT_TOKEN_TYPE_LESS_EQUAL: return "LESS_EQUAL";
         case BAT_TOKEN_TYPE_GREATER_EQUAL: return "GREATER_EQUAL";
-
         case BAT_TOKEN_TYPE_EXIT: return "EXIT";
         case BAT_TOKEN_TYPE_VARIABLE: return "VARIABLE";
+        case BAT_TOKEN_TYPE_ALIAS: return "ALIAS";
+        case BAT_TOKEN_TYPE_START: return "START";
+        case BAT_TOKEN_TYPE_FOR: return "FOR";
+        case BAT_TOKEN_TYPE_WHILE: return "WHILE";
+        case BAT_TOKEN_TYPE_DO: return "DO";
+        case BAT_TOKEN_TYPE_IN: return "IN";
+        case BAT_TOKEN_TYPE_STEP: return "STEP";
+        case BAT_TOKEN_TYPE_BREAK: return "BREAK";
+        case BAT_TOKEN_TYPE_DEBUG: return "DEBUG";
+        case BAT_TOKEN_TYPE_COMMENT: return "COMMENT";
+        case BAT_TOKEN_TYPE_CONTINUE: return "CONTINUE";
         default: return "UNKNOWN";
     }
 }
@@ -132,12 +139,24 @@ BAT_TOKEN_TYPE bat_parse_token(char* str) {
     if (strcmp(str, "exist") == 0) return BAT_TOKEN_TYPE_EXIST;
     if (strcmp(str, "exit") == 0) return BAT_TOKEN_TYPE_EXIT;
 
+
+    if (strcmp(str, "start") == 0) return BAT_TOKEN_TYPE_START;
+    if (strcmp(str, "alias") == 0) return BAT_TOKEN_TYPE_ALIAS;
+
     if (strcmp(str, "==") == 0) return BAT_TOKEN_TYPE_EQUAL;
     if (strcmp(str, "!=") == 0) return BAT_TOKEN_TYPE_NOT_EQUAL;
     if (strcmp(str, ">")  == 0) return BAT_TOKEN_TYPE_GREATER;
     if (strcmp(str, "<")  == 0) return BAT_TOKEN_TYPE_LESS;
     if (strcmp(str, "<=") == 0) return BAT_TOKEN_TYPE_LESS_EQUAL;
     if (strcmp(str, ">=") == 0) return BAT_TOKEN_TYPE_GREATER_EQUAL;
+
+    if (strcmp(str, "for") == 0) return BAT_TOKEN_TYPE_FOR;
+    if (strcmp(str, "while") == 0) return BAT_TOKEN_TYPE_WHILE;
+    if (strcmp(str, "do") == 0) return BAT_TOKEN_TYPE_DO;
+    if (strcmp(str, "in") == 0) return BAT_TOKEN_TYPE_IN;
+    if (strcmp(str, "step") == 0) return BAT_TOKEN_TYPE_STEP;
+    if (strcmp(str, "break") == 0) return BAT_TOKEN_TYPE_BREAK;
+    if (strcmp(str, "continue") == 0) return BAT_TOKEN_TYPE_CONTINUE;
 
     if (isdigit(str[0])) {
         return BAT_TOKEN_TYPE_NUMBER;
@@ -204,10 +223,12 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
             } else {
                 BAT_TOKEN_TYPE type = bat_parse_token(exp[u]);
                 bat_debug("[AUTO_DETECT TYPE] Type: %s | Str: '%s'\n", bat_debug_type(type), exp[u]);
-                if (type != BAT_TOKEN_TYPE_COMMENT){
-                    BAT_TOKEN_T* xtok = bat_create_token(type, exp[u]);
-                    bat_add_token(group, (size_t) xtok);
+                if (type == BAT_TOKEN_TYPE_COMMENT){
+                    return group;
                 }
+                BAT_TOKEN_T* xtok = bat_create_token(type, exp[u]);
+                bat_add_token(group, (size_t) xtok);
+
             }
 
         }
@@ -252,8 +273,8 @@ BAT_T* bat_parse_string(char* String){
 }
 
 int main(int argc, char *argv[]) {
-    char* batFile = readFile((argc > 1?argv[1]:"examples/set.bat"));
-    printf("\nFile: %s\n", (argc > 1?argv[1]:"examples/set.bat"));
+    char* batFile = readFile((argc > 1?argv[1]:"examples/run.bat"));
+    printf("\nFile: %s\n", (argc > 1?argv[1]:"examples/run.bat"));
 
     BAT_T* token = bat_parse_string(batFile);
     token->Debug = 1;

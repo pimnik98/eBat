@@ -5,7 +5,7 @@
 #include "eBatRuntime.h"
 
 void bat_runtime_echo(BAT_T* bat,BAT_GROUP_T* group){
-     if (bat->Echo == 1){
+     if (bat->Echo == 1 && group->Size > 0){
          printf("%s ", EBAT_CONFIG_HELLO_LINE);
         for (int i = 0; i < group->Size; i++){
             BAT_TOKEN_T *Line = (BAT_TOKEN_T *) group->Tokens[i];
@@ -44,6 +44,9 @@ int bat_runtime_equal(int Line, BAT_TOKEN_T* Data1, BAT_TOKEN_T* Eq, BAT_TOKEN_T
         }
 
         int ret = (strcmp(D1, D2) == 0?1:0);
+
+        free(D1);
+        free(D2);
         return ret;
     } else if (Data1->type == BAT_TOKEN_TYPE_NUMBER){
         int a = bat_strtol(Data1->value);
@@ -83,8 +86,46 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
     BAT_TOKEN_T *MainTok = (BAT_TOKEN_T *) group->Tokens[offset + 0];
 
     if (MainTok->type == BAT_TOKEN_TYPE_UNKNOWN) {
-        bat_debug("Unknown data???\n");
-        return 0;
+        int argc = group->Size - offset;
+        char **argv = malloc((argc + 1) * sizeof(char*));
+
+        if (argv == NULL) {
+            return 1;
+        }
+        for (int i = 0; i < argc; i++){
+            BAT_TOKEN_T *DataX = (BAT_TOKEN_T *) group->Tokens[offset + i];
+            if (DataX->type == BAT_TOKEN_TYPE_STRING) {
+                size_t slen = strlen(DataX->value);
+                argv[i] = malloc((slen + 1) * sizeof(char));
+                if (argv[i] == NULL) {
+                    return 1;
+                }
+                memset(argv[i], 0, slen);
+                memcpy(argv[i], DataX->value, slen);
+            } else if (DataX->type == BAT_TOKEN_TYPE_VARIABLE){
+                eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
+                eBatCheckVariable(line, DataX->value, Text);
+                size_t slen = strlen(Text);
+                argv[i] = malloc((slen + 1) * sizeof(char));
+                if (argv[i] == NULL) {
+                    return 1;
+                }
+                memset(argv[i], 0, slen);
+                memcpy(argv[i], Text, slen);
+                free(Text);
+            } else {
+                size_t slen = strlen(DataX->value);
+                argv[i] = malloc((slen + 1) * sizeof(char));
+                if (argv[i] == NULL) {
+                    return 1;
+                }
+                memset(argv[i], 0, slen);
+                memcpy(argv[i], DataX->value, slen);
+            }
+            printf("[%d] val: '%s'\n", i, DataX->value);
+        }
+        int ret = bar_runtime_system_exec(argc, argv);
+        return ret;
     }
 
     bat_debug("[%d] MainTok == %s\n", offset, bat_debug_type(MainTok->type));
@@ -127,6 +168,8 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
             eBatCheckVariable(line, TextTok->value, Text);
             //printf("text: %s\n", Text);
             bat_runtime_system_echo(Text);
+
+            free(Text);
             //printf("[line %d] 3\n", __LINE__);
         } else if (TextTok->type == BAT_TOKEN_TYPE_NUMBER){
             bat_runtime_system_echo(TextTok->value);
@@ -171,6 +214,8 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
                     (breq != 1 && isNOT == 1)){
                     bat_runtime_eval(bat, group, line, offset + isNOT + 3);
                 }
+
+                free(Path);
             }
 
         } else if (Data1->type == BAT_TOKEN_TYPE_NUMBER) {
