@@ -100,7 +100,7 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
                 if (argv[i] == NULL) {
                     return 1;
                 }
-                memset(argv[i], 0, slen);
+                memset(argv[i], 0, slen + 1);
                 memcpy(argv[i], DataX->value, slen);
             } else if (DataX->type == BAT_TOKEN_TYPE_VARIABLE){
                 eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
@@ -110,7 +110,7 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
                 if (argv[i] == NULL) {
                     return 1;
                 }
-                memset(argv[i], 0, slen);
+                memset(argv[i], 0, slen + 1);
                 memcpy(argv[i], Text, slen);
                 free(Text);
             } else {
@@ -119,7 +119,7 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
                 if (argv[i] == NULL) {
                     return 1;
                 }
-                memset(argv[i], 0, slen);
+                memset(argv[i], 0, slen + 1);
                 memcpy(argv[i], DataX->value, slen);
             }
             printf("[%d] val: '%s'\n", i, DataX->value);
