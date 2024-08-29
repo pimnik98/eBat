@@ -6,4 +6,4 @@ dir
 ./aelf.elf "SayoriOS Dev" %test%
 
 if exist "examples/run.bat" echo "run.bat exits"
-if exist "examples/run.bat" examples/run.bat %test%
+if exist "examples/run.bat" "examples/run.bat" %test%
