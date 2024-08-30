@@ -31,6 +31,8 @@ typedef enum {
     BAT_TOKEN_TYPE_EXIT,            ///< Выход
     BAT_TOKEN_TYPE_DEBUG,           ///< Галочка для дебага
 
+    BAT_TOKEN_TYPE_GOTO,            ///< Вызов GoTo
+
     BAT_TOKEN_TYPE_NOT,             ///< Условия для IF | Условие не равно
     BAT_TOKEN_TYPE_EXIST,           ///< Условия для IF | Существует файл или папка
     BAT_TOKEN_TYPE_ISSET,           ///< Условия для IF | Существует ли переменная
@@ -73,6 +75,13 @@ typedef struct BAT_GROUP {
     size_t* Tokens;
 } BAT_GROUP_T;
 
+typedef struct Bat_GOTO {
+    char* Identifier; // Строковый идентификатор
+    int Size;
+    int Capacity;
+    size_t* Groups;
+} BAT_GoTo_T;
+
 typedef struct BAT {
     int Echo;
     int ErrorCode;
@@ -80,6 +89,10 @@ typedef struct BAT {
     int Size;
     int Capacity;
     size_t* Group;
+    int Size_GT;
+    int Capacity_GT;
+    size_t* GoTo;
+    BAT_GoTo_T* CurGoTo;
 } BAT_T;
 
 char* bat_toLower(char* str);
