@@ -233,10 +233,13 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
     int c = str_cdsp2(Line, 0x20);
     char** exp = explode(Line, 0x20);
 
+    int curline = 1;
+
     int inString = 0;
 
     char* currentString = NULL;
     for (int u = 0; u <= c; u++){
+        curline++;
         bat_debug("    |--- [%u] %s\n", u, exp[u]);
         bat_trim(exp[u]);
         size_t len = strlen(exp[u]);
@@ -264,7 +267,10 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
                 free(currentString);
                 return group;
             }
+            bat_debug("Line: %d\n", curline);
+            gt->Line = curline;
             bat->CurGoTo = gt;
+            bat_add_goto(bat, gt);
             //BAT_GOTO_T * gt = bat_create_goto(currentString);
             //bat_add_goto(bat, (size_t) gt);
             //bat->CurGoTo = bat->Size_GoTo;

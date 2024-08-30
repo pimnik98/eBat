@@ -6,7 +6,7 @@
 
 #ifdef DEBUG
 #define bat_debug(M, ...) \
-    printf("[Line %d] " M "", __LINE__, ##__VA_ARGS__);
+    printf("[%s:%d] " M "", __FILE__, __LINE__, ##__VA_ARGS__);
 #endif // DEBUG
 
 
@@ -77,6 +77,7 @@ typedef struct BAT_GROUP {
 
 typedef struct Bat_GOTO {
     char* Identifier; // Строковый идентификатор
+    int Line;
     int Size;
     int Capacity;
     size_t* Groups;

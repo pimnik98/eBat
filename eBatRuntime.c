@@ -4,6 +4,20 @@
 #include "eBat.h"
 #include "eBatRuntime.h"
 
+BAT_GoTo_T* bat_runtime_find_goto(BAT_T* bat, char* key){
+    bat_debug("[Find GoTo] Size: %d\n", bat->Size_GT);
+    for (int i = 0; i < bat->Size_GT; i++){
+        BAT_GoTo_T* gt = bat->GoTo[i];
+        bat_debug(" |--- '%s' == '%s'\n", gt->Identifier, key);
+        if (strcmp(gt->Identifier, key) == 0){
+            bat_debug("   |--- TRUE\n");
+            return gt;
+        }
+    }
+    bat_debug(" |--- NULL RETURN\n");
+    return NULL;
+}
+
 void bat_runtime_echo(BAT_T* bat,BAT_GROUP_T* group){
      if (bat->Echo == 1 && group->Size > 0){
          printf("%s ", EBAT_CONFIG_HELLO_LINE);
@@ -87,6 +101,32 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
 
 
     bat_debug("[%d] MainTok == %s\n", offset, bat_debug_type(MainTok->type));
+
+    if (MainTok->type == BAT_TOKEN_TYPE_GOTO){
+        EBAT_INVALIDARGC(line, group->Size - offset, 2);
+        BAT_TOKEN_T *Data1 = (BAT_TOKEN_T *) group->Tokens[offset + 1];
+        bat_debug("Start goto '%s'\n", Data1->value);
+        BAT_GoTo_T* gt = bat_runtime_find_goto(bat, Data1->value);
+        eBatCheckGoTo(line, gt);
+        int ret = 0;
+        for (int x = 0; x < gt->Size; x++){
+            BAT_GROUP_T* group = (BAT_GROUP_T*) gt->Groups[x];
+
+            bat_runtime_echo(bat, group);
+
+            ret = bat_runtime_eval(bat, group, line, 0);
+            bat_debug("sysline: %d | line: %d | ret: %d\n",gt->Line, line, ret);
+            if (EBAT_CONFIG_CRITICAL_STOP == 1 && ret > 0) {
+                bat_debug("CRITICAL OUT\n");
+                bat->ErrorCode = ret;
+                return ret;
+                break;
+            }
+        }
+        bat_runtime_eval(bat, gt->Groups, line, 0);
+        return ret;
+    }
+
     if (MainTok->type == BAT_TOKEN_TYPE_EXIT) {
         EBAT_INVALIDARGC(line, group->Size - offset, 2);
         BAT_TOKEN_T *Data1 = (BAT_TOKEN_T *) group->Tokens[offset + 1];

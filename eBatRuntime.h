@@ -47,6 +47,11 @@
         return 6;                         \
     }
 
+#define eBatCheckGoTo(Line, Key) \
+    if (Key == NULL){            \
+        bat_fatalerror(Line, "The goto \"%s\" was not found.", Key); \
+        return 7;   \
+    }
 
 int bat_runtime_system_cls();
 void bat_runtime_system_echo(char* text);
