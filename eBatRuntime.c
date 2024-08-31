@@ -111,8 +111,16 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
         EBAT_INVALIDARGC(line, group->Size - offset, 2);
         BAT_TOKEN_T *Data1 = (BAT_TOKEN_T *) group->Tokens[offset + 1];
         bat_debug("Start goto '%s'\n", Data1->value);
-        BAT_GoTo_T* gt = bat_runtime_find_goto(bat, Data1->value);
+        BAT_GoTo_T* gt = NULL;
+        if (Data1->type == BAT_TOKEN_TYPE_VARIABLE){
+            eBatCheckVariable(line, Data1->value, D1);
+            gt = bat_runtime_find_goto(bat, D1);
+            free(D1);
+        } else {
+            gt = bat_runtime_find_goto(bat, Data1->value);
+        }
         eBatCheckGoTo(line, gt);
+
         int ret = 0;
         for (int x = 0; x < gt->Size; x++){
             BAT_GROUP_T* group = (BAT_GROUP_T*) gt->Groups[x];

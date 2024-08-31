@@ -30,3 +30,5 @@ tests:
 	-@./$(OUTPUT_NAME) "./examples/if.bat"
 	-@./$(OUTPUT_NAME) "./examples/set.bat"
 	-@./$(OUTPUT_NAME) "./examples/run.bat"
+	-@./$(OUTPUT_NAME) "./examples/goto.bat"
+	-@./$(OUTPUT_NAME) "./examples/goto-if.bat"
