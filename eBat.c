@@ -434,6 +434,7 @@ void bat_destroy(BAT_T* bat){
     }
     free(bat->GoTo);
     bat_destroy_group((BAT_GROUP_T**) bat->Group, bat->Size);
+    free(bat);
 }
 
 int main(int argc, char *argv[]) {
