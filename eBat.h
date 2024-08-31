@@ -81,7 +81,7 @@ typedef struct Bat_GOTO {
     int Line;
     int Size;
     int Capacity;
-    size_t* Groups;
+    BAT_GROUP_T** Groups;
 } BAT_GoTo_T;
 
 typedef struct BAT {

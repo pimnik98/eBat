@@ -49,14 +49,14 @@
 
 #define eBatCheckGoTo(Line, Key) \
     if (Key == NULL){            \
-        bat_fatalerror(Line, "The goto \"%s\" was not found.", Key); \
+        bat_fatalerror(Line, "The goto to line was not found."); \
         return 7;   \
     }
-
-int bat_runtime_system_cls();
+int bar_runtime_system_exec(int argc, char** argv);
 void bat_runtime_system_echo(char* text);
 void bat_runtime_system_set(char* key, char* val);
 char* bat_runtime_system_get(char* key);
+void bat_runtime_system_pause();
 
 int bat_runtime_fileio_exist(char* path);
 
@@ -67,5 +67,7 @@ char* bat_toLower(char* str);
 char** explode(const char str[], char delimiter);
 int str_cdsp2(const char* a_str, char del);
 char* readFile(const char* filename);
+
+int bat_runtime_exec(BAT_T* bat);
 
 #endif //EBAT_RUNTIME_H

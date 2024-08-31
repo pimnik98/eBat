@@ -71,6 +71,9 @@ char* readFile(const char* filename) {
     }
 
     int read = fread(file_content, 1, file_size, file);
+    if (read == 0){
+        bat_debug("[READ] Error!\n");
+    }
     file_content[file_size] = '\0';
     fclose(file);
 

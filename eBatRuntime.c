@@ -7,7 +7,7 @@
 BAT_GoTo_T* bat_runtime_find_goto(BAT_T* bat, char* key){
     bat_debug("[Find GoTo] Size: %d\n", bat->Size_GT);
     for (int i = 0; i < bat->Size_GT; i++){
-        BAT_GoTo_T* gt = bat->GoTo[i];
+        BAT_GoTo_T* gt = (BAT_GoTo_T*) bat->GoTo[i];
         bat_debug(" |--- '%s' == '%s'\n", gt->Identifier, key);
         if (strcmp(gt->Identifier, key) == 0){
             bat_debug("   |--- TRUE\n");
@@ -34,12 +34,14 @@ void bat_runtime_echo(BAT_T* bat,BAT_GROUP_T* group){
         }
         printf("\n");
     }
+    #ifdef DEBUG
     if (bat->Debug == 1){
         for (int y = 0; y < group->Size; y++){
             BAT_TOKEN_T* xtok = (BAT_TOKEN_T*) group->Tokens[y];
             bat_debug(" |--- [%d | %d] Tok: [%d] %s | Val: %s \n", y+1, group->Size,  xtok->type, bat_debug_type(xtok->type), xtok->value);
         }
     }
+    #endif
 }
 
 int bat_runtime_equal(int Line, BAT_TOKEN_T* Data1, BAT_TOKEN_T* Eq, BAT_TOKEN_T* Data2) {
@@ -126,7 +128,7 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
                 break;
             }
         }
-        bat_runtime_eval(bat, gt->Groups, line, 0);
+        bat_runtime_eval(bat, (BAT_GROUP_T*) gt->Groups, line, 0);
         return ret;
     }
 

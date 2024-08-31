@@ -8,6 +8,7 @@ int bar_runtime_system_exec(int argc, char** argv){
     for (int i = 0; i < argc; i++){
         printf("[%d | %d] '%s'\n", i + 1, argc, argv[i]);
     }
+    return 0;
 }
 
 /**

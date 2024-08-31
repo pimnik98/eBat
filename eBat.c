@@ -279,7 +279,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
             bat_debug("Line: %d\n", curline);
             gt->Line = curline;
             bat->CurGoTo = gt;
-            bat_add_goto(bat, gt);
+            bat_add_goto(bat, (size_t) gt);
             //BAT_GOTO_T * gt = bat_create_goto(currentString);
             //bat_add_goto(bat, (size_t) gt);
             //bat->CurGoTo = bat->Size_GoTo;
@@ -371,7 +371,7 @@ BAT_T* bat_parse_string(char* String){
     int cLine = str_cdsp2(String, '\n');
     char** Line = explode(String, '\n');
     for (int uL = 0; uL <= cLine; uL++){
-        if (Line[uL][0] == NULL){
+        if (Line[uL] == NULL){
             continue;
         }
         int len = strlen(Line[uL]);
