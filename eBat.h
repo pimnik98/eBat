@@ -32,6 +32,7 @@ typedef enum {
     BAT_TOKEN_TYPE_DEBUG,           ///< Галочка для дебага
 
     BAT_TOKEN_TYPE_GOTO,            ///< Вызов GoTo
+    BAT_TOKEN_TYPE_PAUSE,           ///< Токен паузы
 
     BAT_TOKEN_TYPE_NOT,             ///< Условия для IF | Условие не равно
     BAT_TOKEN_TYPE_EXIST,           ///< Условия для IF | Существует файл или папка

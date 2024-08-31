@@ -9,6 +9,7 @@ echo "End BABA"
 
 :baba
 echo "Baba zina"
+pause
 
 echo "goto label"
 goto elly

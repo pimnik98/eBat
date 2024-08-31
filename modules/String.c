@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include "../eBat.h"
 #include "../eBatRuntime.h"
+#include <stdlib.h>
 
 int bat_strtol(char *string) {
     int number = 0;

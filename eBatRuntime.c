@@ -102,7 +102,10 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
 
     bat_debug("[%d] MainTok == %s\n", offset, bat_debug_type(MainTok->type));
 
-    if (MainTok->type == BAT_TOKEN_TYPE_GOTO){
+    if (MainTok->type == BAT_TOKEN_TYPE_PAUSE){
+        bat_runtime_system_pause();
+        return 0;
+    } else if (MainTok->type == BAT_TOKEN_TYPE_GOTO){
         EBAT_INVALIDARGC(line, group->Size - offset, 2);
         BAT_TOKEN_T *Data1 = (BAT_TOKEN_T *) group->Tokens[offset + 1];
         bat_debug("Start goto '%s'\n", Data1->value);

@@ -39,3 +39,12 @@ char* bat_runtime_system_get(char* key){
     bat_debug("[RUNTIME] [System] [GET] '%s'\n", key);
     return NULL;
 }
+
+
+void bat_runtime_system_pause(){
+    /// Insert your code
+    bat_debug("[RUNTIME] [System] [Pause]\n");
+    bat_runtime_system_echo("Please, press button");
+
+    ///getchar(); - Функция которая ожидает ввода любой клавиши
+}

@@ -220,6 +220,8 @@ BAT_TOKEN_TYPE bat_parse_token(char* str) {
     if (strcmp(str, "leq") == 0) return BAT_TOKEN_TYPE_LESS_EQUAL;
     if (strcmp(str, "geq") == 0) return BAT_TOKEN_TYPE_GREATER_EQUAL;
 
+    if (strcmp(str, "pause") == 0) return BAT_TOKEN_TYPE_PAUSE;
+
     if (strcmp(str, "for") == 0) return BAT_TOKEN_TYPE_FOR;
     if (strcmp(str, "while") == 0) return BAT_TOKEN_TYPE_WHILE;
     if (strcmp(str, "do") == 0) return BAT_TOKEN_TYPE_DO;

@@ -99,3 +99,11 @@ void bat_runtime_system_set(char* key, char* val){
     }
     free(get);
 }
+
+void bat_runtime_system_pause(){
+    /// Insert your code
+    bat_debug("[RUNTIME] [System] [Pause]\n");
+    bat_runtime_system_echo("Please, press button");
+
+    getchar();
+}
