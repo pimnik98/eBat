@@ -398,6 +398,44 @@ BAT_T* bat_parse_string(char* String){
     return bat;
 }
 
+void bat_destroy_token(BAT_TOKEN_T** token, int Size){
+    bat_debug("[BAT] [Destroy] [Tokens] Size: %d\n");
+    for (int x = 0; x < Size; x++){
+        BAT_TOKEN_T* tok = token[x];
+        bat_debug("    |--- [%d | %d] TYPE: %s | Value: '%s'\n",x + 1, Size, bat_debug_type(tok->type), tok->value);
+        free(tok->value);
+        free(tok);
+    }
+    free(token);
+}
+
+void bat_destroy_group(BAT_GROUP_T** group, int Size){
+    bat_debug("[BAT] [Destroy] [Group] Size: %d\n", Size);
+    for (int x = 0; x < Size; x++){
+        BAT_GROUP_T* gz = group[x];
+        bat_debug(" |--- [%d | %d]\n",x + 1, Size);
+        bat_destroy_token((BAT_TOKEN_TYPE**) gz->Tokens, gz->Size);
+        free(gz);
+    }
+    free(group);
+}
+
+void bat_destroy(BAT_T* bat){
+    bat_debug("[BAT] [Destroy]\n");
+    bat_debug("  |--- Goto (%d)\n", bat->Size_GT);
+    for (int a = 0; a < bat->Size_GT; a++){
+        BAT_GoTo_T* gt = (BAT_GoTo_T*) bat->GoTo[a];
+        bat_debug("    |--- ID: %s\n", gt->Identifier);
+        if (gt->Identifier != NULL){
+            free(gt->Identifier);
+        }
+        bat_destroy_group(gt->Groups, gt->Size);
+        free(gt);
+    }
+    free(bat->GoTo);
+    bat_destroy_group((BAT_GROUP_T**) bat->Group, bat->Size);
+}
+
 int main(int argc, char *argv[]) {
     char* file = "examples/goto-if.bat";
     char* batFile = readFile((argc > 1?argv[1]:file));
@@ -416,6 +454,8 @@ int main(int argc, char *argv[]) {
     bat_debug("Count: %d\n", token->Size);
     bat_debug("\n========================\n");
     bat_debug("RETURN CODE: %d\n",ret);
+
+    bat_destroy(token);
     return ret;
 }
 
