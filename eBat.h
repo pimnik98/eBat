@@ -17,6 +17,8 @@
 #define bat_fatalerror(Line, M, ...) \
     printf("\033[31;1mError on line %d: " M "\033[0m\n", Line, ##__VA_ARGS__)
 
+#define BAT_VERSION "1.2.9.2"
+
 typedef enum {
     BEC_OK = 0,     /// Все норм
     BEC_MEMORY = 1, /// Недостаточно памяти

@@ -32,7 +32,6 @@ void bat_runtime_system_echo(char* text, int newline, int endline){
         return;
     }
 
-    //printf("[RUNTIME] [System] [ECHO] [0x%x] '%s'\n", text[0], text);
     printf("%s%s%s", (newline == 1?"< ":""), text, (endline == 1?" \n":" "));
 }
 
@@ -43,6 +42,7 @@ void bat_runtime_system_echo(char* text, int newline, int endline){
  */
 char* bat_runtime_system_get(char* key){
     /// Insert your code
+    bat_toUpper(key);
     //bat_debug("[RUNTIME] [System] [GET] '%s'\n", key);
     //printf("[RUNTIME] [System] [GET] '%s'\n", key);
     for (int i = 0; i < 256; i++){
@@ -67,7 +67,7 @@ void bat_runtime_system_set(char* key, char* val){
     /// Insert your code
     //bat_debug("[RUNTIME] [System] [SET] '%s' => '%s'\n", key, val);
     //printf("[RUNTIME] [System] [SET] '%s' => '%s'\n", key, val);
-
+    bat_toUpper(key);
     char* get = bat_runtime_system_get(key);
 
     int len_key = (key == NULL?0:strlen(key));

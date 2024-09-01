@@ -16,10 +16,14 @@ int bar_runtime_system_exec(int argc, char** argv){
  * @module System.Echo
  * @param text - Строка для вывода текст
  */
-void bat_runtime_system_echo(char* text, int newline){
+void bat_runtime_system_echo(char* text, int newline, int endline){
     /// Insert your code to execute the "echo" command
     bat_debug("[RUNTIME] [System] [ECHO] %s\n", text);
-    printf("\n%s%s%s", (newline == 1?"\n< ":""), text, (newline == 1?"":" "));
+    if (text == NULL){
+        return;
+    }
+
+    printf("%s%s%s", (newline == 1?"< ":""), text, (endline == 1?" \n":" "));
 }
 
 /**
@@ -30,6 +34,8 @@ void bat_runtime_system_echo(char* text, int newline){
 void bat_runtime_system_set(char* key, char* val){
     /// Insert your code
     bat_debug("[RUNTIME] [System] [SET] '%s' => '%s'\n", key, val);
+
+    bat_toUpper(key);
 }
 
 /**
@@ -39,6 +45,7 @@ void bat_runtime_system_set(char* key, char* val){
 char* bat_runtime_system_get(char* key){
     /// Insert your code
     bat_debug("[RUNTIME] [System] [GET] '%s'\n", key);
+    bat_toUpper(key);
     return NULL;
 }
 
@@ -46,7 +53,7 @@ char* bat_runtime_system_get(char* key){
 void bat_runtime_system_pause(){
     /// Insert your code
     bat_debug("[RUNTIME] [System] [Pause]\n");
-    bat_runtime_system_echo("Please, press button", 1);
+    bat_runtime_system_echo("Please, press button", 1, 1);
 
     ///getchar(); - Функция которая ожидает ввода любой клавиши
 }

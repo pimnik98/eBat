@@ -442,8 +442,13 @@ int main(int argc, char *argv[]) {
     char* batFile = readFile((argc > 1?argv[1]:file));
     printf("\nFile: %s\n", (argc > 1?argv[1]:file));
 
+    if (argc < 2){
+        printf("Embedded Batch File Handler\n * Author: Nikita Piminoff\n * Version: %s\n * Example: ./eBat mybat.bat\n", BAT_VERSION);
+        return 0;
+    }
+
     BAT_T* token = bat_parse_string(batFile);
-    token->Debug = 1;
+    token->Debug = 0;
     token->Echo = 1;
     bat_debug("========================\n");
 
