@@ -19,7 +19,7 @@ int bar_runtime_system_exec(int argc, char** argv){
 void bat_runtime_system_echo(char* text, int newline){
     /// Insert your code to execute the "echo" command
     bat_debug("[RUNTIME] [System] [ECHO] %s\n", text);
-    printf("%s%s%s", (newline == 1?"< ":""), text, (newline == 1?"\n":" "));
+    printf("\n%s%s%s", (newline == 1?"\n< ":""), text, (newline == 1?"":" "));
 }
 
 /**

@@ -20,7 +20,7 @@ BAT_GoTo_T* bat_runtime_find_goto(BAT_T* bat, char* key){
 
 void bat_runtime_echo(BAT_T* bat,BAT_GROUP_T* group){
      if (bat->Echo == 1 && group->Size > 0){
-         printf("%s ", EBAT_CONFIG_HELLO_LINE);
+        printf("%s ", EBAT_CONFIG_HELLO_LINE);
         for (int i = 0; i < group->Size; i++){
             BAT_TOKEN_T *Line = (BAT_TOKEN_T *) group->Tokens[i];
             if (Line->type == BAT_TOKEN_TYPE_VARIABLE) {
@@ -176,19 +176,19 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
         }
 
         for (int ec = 1; ec < group->Size - offset; ec++){
+            int isStart = (ec == 1?1:0);
+            int isEnd = (group->Size - offset - 1 == ec?1:0);
             BAT_TOKEN_T *Echo = (BAT_TOKEN_T *) group->Tokens[offset + ec];
-            if (Echo->type == BAT_TOKEN_TYPE_STRING){
-                bat_runtime_system_echo(Echo->value, 0);
-            } else if (Echo->type == BAT_TOKEN_TYPE_VARIABLE){
+            //printf("\n |----- [%d | %d] '%s'\n",ec, group->Size - offset - 1, Echo->value);
+            if (Echo->type == BAT_TOKEN_TYPE_VARIABLE){
                 eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
                 eBatCheckVariable(line, Echo->value, Text);
-                bat_runtime_system_echo(Text, 0);
+                bat_runtime_system_echo(Text, isStart, isEnd);
                 free(Text);
             } else {
-                bat_runtime_system_echo(Echo->value, 0);
+                bat_runtime_system_echo(Echo->value, isStart, isEnd);
             }
         }
-        bat_runtime_system_echo("\n", 0);
         return 0;
     }
 

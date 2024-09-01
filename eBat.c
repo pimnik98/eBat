@@ -438,7 +438,7 @@ void bat_destroy(BAT_T* bat){
 }
 
 int main(int argc, char *argv[]) {
-    char* file = "examples/echo.bat";
+    char* file = "examples/goto-if.bat";
     char* batFile = readFile((argc > 1?argv[1]:file));
     printf("\nFile: %s\n", (argc > 1?argv[1]:file));
 

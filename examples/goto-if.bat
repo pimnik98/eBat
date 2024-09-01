@@ -2,12 +2,12 @@ echo on
 echo "Testing goto-if + variable"
 
 :success
-echo "Successful!"
+echo "Successful!" or Success
 set mainroot = "error"
 goto main
 
 :error
-echo "Error"
+echo "Error" or Error
 goto end
 
 :main
