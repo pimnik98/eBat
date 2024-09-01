@@ -14,3 +14,8 @@ int bat_runtime_fileio_exist(char* path){
 
     return 0;
 }
+
+int bat_runtime_fileio_write(const char *filename, const char *text, int mode) {
+    /// Insert your code
+    return 0;
+}

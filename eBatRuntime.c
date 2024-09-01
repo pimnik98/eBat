@@ -161,30 +161,34 @@ int bat_runtime_eval(BAT_T* bat,BAT_GROUP_T* group, int line, int offset) {
         }
     }
     if (MainTok->type == BAT_TOKEN_TYPE_ECHO) {
-        EBAT_INVALIDARGC(line, group->Size - offset, 2);
+        EBAT_INVALIDMINARGC(line, group->Size - offset, 2);
         BAT_TOKEN_T *TextTok = (BAT_TOKEN_T *) group->Tokens[offset + 1];
         //printf("TextTok is %s => '%s'\n", bat_debug_type(TextTok->type), TextTok->value);
         if (TextTok->type == BAT_TOKEN_TYPE_DEBUG){
             bat->Debug = !(bat->Debug);
+            return 0;
         } else if (TextTok->type == BAT_TOKEN_TYPE_TRUE){
             bat->Echo = 1;
+            return 0;
         } else if (TextTok->type == BAT_TOKEN_TYPE_FALSE){
             bat->Echo = 0;
-        } else if (TextTok->type == BAT_TOKEN_TYPE_STRING){
-            bat_runtime_system_echo(TextTok->value);
-        } else if (TextTok->type == BAT_TOKEN_TYPE_VARIABLE){
-            //printf("[line %d] 1\n", __LINE__);
-            eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
-            //printf("[line %d] 2\n", __LINE__);
-            eBatCheckVariable(line, TextTok->value, Text);
-            //printf("text: %s\n", Text);
-            bat_runtime_system_echo(Text);
-
-            free(Text);
-            //printf("[line %d] 3\n", __LINE__);
-        } else if (TextTok->type == BAT_TOKEN_TYPE_NUMBER){
-            bat_runtime_system_echo(TextTok->value);
+            return 0;
         }
+
+        for (int ec = 1; ec < group->Size - offset; ec++){
+            BAT_TOKEN_T *Echo = (BAT_TOKEN_T *) group->Tokens[offset + ec];
+            if (Echo->type == BAT_TOKEN_TYPE_STRING){
+                bat_runtime_system_echo(Echo->value, 0);
+            } else if (Echo->type == BAT_TOKEN_TYPE_VARIABLE){
+                eBatCheckModule(line, EBAT_CONFIG_SYSTEM_SET, "System.Set");
+                eBatCheckVariable(line, Echo->value, Text);
+                bat_runtime_system_echo(Text, 0);
+                free(Text);
+            } else {
+                bat_runtime_system_echo(Echo->value, 0);
+            }
+        }
+        bat_runtime_system_echo("\n", 0);
         return 0;
     }
 

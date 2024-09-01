@@ -438,7 +438,7 @@ void bat_destroy(BAT_T* bat){
 }
 
 int main(int argc, char *argv[]) {
-    char* file = "examples/goto-if.bat";
+    char* file = "examples/echo.bat";
     char* batFile = readFile((argc > 1?argv[1]:file));
     printf("\nFile: %s\n", (argc > 1?argv[1]:file));
 
@@ -458,19 +458,4 @@ int main(int argc, char *argv[]) {
 
     bat_destroy(token);
     return ret;
-}
-
-
-///////////////////////////////
-// Освобождение памяти для хранилища GoTo
-void goto_destroy(BAT_GoTo_T* goto_store) {
-    if (goto_store) {
-        for (int i = 0; i < goto_store->Size; i++) {
-            //free(goto_store->Groups[i]->Tokens);
-            free(goto_store->Groups[i]);
-        }
-        free(goto_store->Groups);
-        free(goto_store->Identifier);
-        free(goto_store);
-    }
 }

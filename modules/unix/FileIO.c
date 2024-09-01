@@ -38,3 +38,32 @@ int bat_runtime_fileio_exist(char* path){
     bat_debug("file: %d || dir: %d\n", file, dir);
     return (file == 1 || dir == 1);
 }
+
+int bat_runtime_fileio_write(const char *filename, const char *text, int mode) {
+    FILE *file;
+    char *mode_str;
+
+    // Выбор режима записи в файл (дозапись или перезапись)
+    if (mode == 1) {
+        mode_str = "a"; // Append (дозапись)
+    } else {
+        mode_str = "w"; // Write (перезапись)
+    }
+
+    // Открытие файла в выбранном режиме
+    file = fopen(filename, mode_str);
+
+    // Проверка на ошибки открытия файла
+    if (file == NULL) {
+        bat_debug("Error open file: %s\n", filename);
+        return 1; // Возвращение кода ошибки
+    }
+
+    // Запись текста в файл
+    fprintf(file, "%s", text);
+
+    // Закрытие файла
+    fclose(file);
+
+    return 0; // Возвращение кода успеха
+}

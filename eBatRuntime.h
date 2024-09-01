@@ -53,7 +53,7 @@
         return 7;   \
     }
 int bar_runtime_system_exec(int argc, char** argv);
-void bat_runtime_system_echo(char* text);
+void bat_runtime_system_echo(char* text, int newline);
 void bat_runtime_system_set(char* key, char* val);
 char* bat_runtime_system_get(char* key);
 void bat_runtime_system_pause();

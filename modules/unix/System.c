@@ -26,10 +26,10 @@ int bar_runtime_system_exec(int argc, char** argv){
  * @module System.Echo
  * @param text - Строка для вывода текст
  */
-void bat_runtime_system_echo(char* text){
+void bat_runtime_system_echo(char* text, int newline){
     /// Insert your code to execute the "echo" command
     bat_debug("[RUNTIME] [System] [ECHO] %s\n", text);
-    printf("< %s\n", text);
+    printf("%s%s%s", (newline == 1?"< ":""), text, (newline == 1?"\n":" "));
 }
 
 
@@ -103,7 +103,7 @@ void bat_runtime_system_set(char* key, char* val){
 void bat_runtime_system_pause(){
     /// Insert your code
     bat_debug("[RUNTIME] [System] [Pause]\n");
-    bat_runtime_system_echo("Please, press button");
+    bat_runtime_system_echo("Please, press button", 1);
 
     getchar();
 }
