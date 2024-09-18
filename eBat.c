@@ -124,7 +124,7 @@ void bat_add_token(BAT_GROUP_T* bat, size_t element) {
     bat->Tokens[bat->Size++] = element;
 }
 BAT_TOKEN_T* bat_create_token(BAT_TOKEN_TYPE type, char* value) {
-    BAT_TOKEN_T* token = malloc(sizeof(BAT_TOKEN_T));
+    BAT_TOKEN_T* token = calloc(1, sizeof(BAT_TOKEN_T));
     if (token == 0){
         return NULL;
     }
@@ -304,7 +304,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
             strcpy(currentString, exp[u] + 1);
         } else if (inString) {
             if (exp[u][len - 1] == '"') {
-                currentString = realloc(currentString, (strlen(currentString) + len) * sizeof(char));
+                currentString = realloc(currentString, (strlen(currentString) + len + 2) * sizeof(char));
                 strcat(currentString, " ");
                 strcat(currentString, exp[u]);
                 currentString[strlen(currentString) - 1] = '\0';
@@ -315,7 +315,7 @@ BAT_GROUP_T* bat_parse_line(BAT_T* bat, char* Line){
                 bat_add_token(group, (size_t) xtok);
                 free(currentString);
             } else {
-                currentString = realloc(currentString, (strlen(currentString) + len + 1) * sizeof(char));
+                currentString = realloc(currentString, (strlen(currentString) + len + 2) * sizeof(char));
                 strcat(currentString, " ");
                 strcat(currentString, exp[u]);
             }
@@ -414,7 +414,7 @@ void bat_destroy_group(BAT_GROUP_T** group, int Size){
     for (int x = 0; x < Size; x++){
         BAT_GROUP_T* gz = group[x];
         bat_debug(" |--- [%d | %d]\n",x + 1, Size);
-        bat_destroy_token((BAT_TOKEN_TYPE**) gz->Tokens, gz->Size);
+        bat_destroy_token((BAT_TOKEN_T**) gz->Tokens, gz->Size);
         free(gz);
     }
     free(group);
