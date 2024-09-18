@@ -62,8 +62,7 @@ char* readFile(const char* filename) {
     long file_size = ftell(file);
     rewind(file);
 
-    char* file_content = malloc(file_size + 1); // +1 для завершающего нулевого символа
-    memset(file_content, 0, (file_size + 1));
+    char* file_content = calloc(file_size + 1, 1); // +1 для завершающего нулевого символа
     if (file_content == NULL) {
         bat_debug("Memory allocation error\n");
         fclose(file);
@@ -90,12 +89,12 @@ int str_cdsp2(const char* a_str, char del){
 }
 char** explode(const char str[], char delimiter) {
     int ccc = str_cdsp2(str, delimiter);
-    char** result = malloc(strlen(str)*2);
+    char** result = calloc(strlen(str)*2, 1);
     int y = 0;
     int a = 0;
 
     for (int b = 0; b <= ccc; b++) {
-        result[b] = malloc(strlen(str) * sizeof(char));
+        result[b] = calloc((strlen(str) + 1), sizeof(char));
     }
 
     for (int i = 0; i < strlen(str); i++){
